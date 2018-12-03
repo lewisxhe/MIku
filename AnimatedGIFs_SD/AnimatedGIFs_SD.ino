@@ -8,20 +8,21 @@
     {                    \
         x, #x, sizeof(x) \
     }
-// #define USE_ESPI
+#define USE_ESPI
 
 #define DISPLAY_TIME_SECONDS 80
 #define GIF_DIRECTORY "/gifs"
 
 #ifdef USE_ESPI
+//need change cs dc pin and w/h
 #include <TFT_eSPI.h>
-#define SCREEN_WIDTH 128//320
-#define SCREEN_HEIGHT 128//240
+#define SCREEN_WIDTH 130  //320//
+#define SCREEN_HEIGHT 130 //240//
 #define SCREEN_MISO 12
 #define SCREEN_MOSI 23
 #define SCREEN_SCLK 18
-#define SCREEN_CS 16//27 // Chip select control pin
-#define SCREEN_DC 17//26 // Data Command control pin
+#define SCREEN_CS 16 //27 // Chip select control pin
+#define SCREEN_DC 17 //26 // Data Command control pin
 #define SCREEN_RST 5 // Reset pin (could connect to RST pin)
 TFT_eSPI tft = TFT_eSPI();
 #else
@@ -133,9 +134,10 @@ void updateScreenCallback(void)
     SPI.beginTransaction(settings);
 
 #ifdef USE_ESPI
-    tft.setWindow(0, 0, endX, endY);
-    digitalWrite(SCREEN_CS, LOW); // Chip select
-    digitalWrite(SCREEN_DC, HIGH);   // Data mode
+    tft.setAddrWindow(0, 0, endX, endY);
+    // tft.setWindow(0, 0, endX, endY);
+    digitalWrite(SCREEN_CS, LOW);  // Chip select
+    digitalWrite(SCREEN_DC, HIGH); // Data mode
     SPI.writePixels((uint8_t *)pBuffer, height * width * 2);
     digitalWrite(SCREEN_CS, HIGH); // Deselect
 #else
@@ -227,6 +229,13 @@ void setup()
     screen[0].tft.writeCommand(SSD1351_CMD_SETREMAP);
     screen[0].tft.writeData(0x76);
 #endif
+    // while (1)
+    // {
+    //     tft.fillScreen(0xF280);
+    //     delay(1000);
+    //     tft.fillScreen(0x0800);
+    //     delay(1000);
+    // }
     // #ifdef USE_SPIRAM
     //     pBuffer = (uint16_t *)heap_caps_malloc(SCREEN_WIDTH * SCREEN_HEIGHT, MALLOC_CAP_SPIRAM);
     // #else
